@@ -1,31 +1,33 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:twitter_clone/common/common.dart';
-import 'package:twitter_clone/constants/ui_constants.dart';
+import 'package:twitter_clone/constants/constants.dart';
 import 'package:twitter_clone/features/auth/widgets/auth_field.dart';
-import 'package:twitter_clone/theme/pallete.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+import '../../../common/common.dart';
+import '../../../theme/theme.dart';
+
+class SignUpView extends StatefulWidget {
+  const SignUpView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<SignUpView> createState() => _SignUpViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _SignUpViewState extends State<SignUpView> {
+
   final appBar = UIConstants.appBar();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       appBar: appBar,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+            const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
             child: Column(
               children: [
                 AuthField(

@@ -15,6 +15,13 @@ abstract class IAuthAPI {
     required String email,
     required String password,
   });
+
+  FutureEither<Session> login({
+    required String email,
+    required String password,
+  });
+
+  Future<User?> getCurrentUser();
 }
 
 class AuthAPI implements IAuthAPI {
@@ -41,5 +48,44 @@ class AuthAPI implements IAuthAPI {
       }
       return left(Failure(e.toString(), stackTrace));
     }
+  }
+
+  @override
+  FutureEither<Session> login(
+      {required String email, required String password}) async {
+    try {
+      final session =
+          await _account.createEmailSession(email: email, password: password);
+
+      return right(session);
+    } on AppwriteException catch (e, stackTrace) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return left(Failure(e.message ?? 'something went wrong!', stackTrace));
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return left(Failure(e.toString(), stackTrace));
+    }
+  }
+
+  @override
+  Future<User?> getCurrentUser() async {
+    try {
+      final user = await _account.get();
+
+      return user;
+    } on AppwriteException catch (e, stackTrace) {
+      if (kDebugMode) {
+        print(e);
+      }
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    return null;
   }
 }

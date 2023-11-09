@@ -39,12 +39,12 @@ class AuthAPI implements IAuthAPI {
       return right(user);
     } on AppwriteException catch (e, stackTrace) {
       if (kDebugMode) {
-        print(e);
+        print('signUp ${e.message}');
       }
       return left(Failure(e.message ?? 'something went wrong!', stackTrace));
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        print(e);
+        print('signUp ${e.toString()}');
       }
       return left(Failure(e.toString(), stackTrace));
     }

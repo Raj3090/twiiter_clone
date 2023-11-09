@@ -35,7 +35,7 @@ class AuthController extends StateNotifier<bool> {
     var response = await _authAPI.signUp(email: email, password: password);
 
     state = false;
-    response.fold((error) => showSnackBar(context, "error.message"),
+    response.fold((error) => showSnackBar(context, error.message),
         (user) async {
       final res2 = await _userAPI.saveUserData(UserModel(
           email: email,
@@ -48,7 +48,9 @@ class AuthController extends StateNotifier<bool> {
           followers: [],
           following: []));
 
-      res2.fold((error) => showSnackBar(context, error.message), (r) {
+      res2.fold((error) {
+        showSnackBar(context, error.message);
+      }, (r) {
         if (mounted) {
           showSnackBar(context, 'Account created , please login');
           Navigator.push(context, LoginView.route());

@@ -34,7 +34,7 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(authControllerProvider);
     return isLoading
-        ? const Loader()
+        ? const LoadingPage()
         : Scaffold(
             appBar: appBar,
             body: Center(

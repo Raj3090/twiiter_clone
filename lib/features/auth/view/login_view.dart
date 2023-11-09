@@ -34,7 +34,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
     final isLoading = ref.watch(authControllerProvider);
 
     return isLoading
-        ? const Loader()
+        ? const LoadingPage()
         : Scaffold(
             appBar: appBar,
             body: Center(

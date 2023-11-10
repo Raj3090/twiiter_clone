@@ -77,11 +77,11 @@ class AuthAPI implements IAuthAPI {
       final user = await _account.get();
 
       return user;
-    } on AppwriteException catch (e, stackTrace) {
+    } on AppwriteException catch (e, _) {
       if (kDebugMode) {
         print(e);
       }
-    } catch (e, stackTrace) {
+    } catch (e, _) {
       if (kDebugMode) {
         print(e);
       }

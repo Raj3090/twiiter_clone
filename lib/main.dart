@@ -20,16 +20,15 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
         title: 'Twitter Clone',
         theme: AppTheme.theme,
-        home: ref.watch(userAccountProvider).when(
-            data: (user) {
-              if (user != null) {
-                return const HomeView();
-              }
-              return const SignUpView();
-            },
-            error: (e, st) {},
-            loading: () {
-              return const LoadingPage();
-            }));
+        home: ref.watch(userAccountProvider).when(data: (user) {
+          if (user != null) {
+            return const HomeView();
+          }
+          return const SignUpView();
+        }, error: (e, st) {
+          return const Text('Something went wrong!');
+        }, loading: () {
+          return const LoadingPage();
+        }));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/common/common.dart';
+import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
 class CreateTweetView extends ConsumerStatefulWidget {
@@ -17,6 +18,7 @@ class CreateTweetView extends ConsumerStatefulWidget {
 class _CreateTweetViewState extends ConsumerState<CreateTweetView> {
   @override
   Widget build(BuildContext context) {
+    final currentUser = ref.watch(currentUserDataProvider)?.value;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -25,7 +27,9 @@ class _CreateTweetViewState extends ConsumerState<CreateTweetView> {
             size: 28,
             color: Pallete.whiteColor,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         actions: [
           RoundedSmallButton(
@@ -36,6 +40,18 @@ class _CreateTweetViewState extends ConsumerState<CreateTweetView> {
           )
         ],
       ),
+      body: currentUser == null
+          ? const Loader()
+          : SafeArea(
+              child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(currentUser.profilePic),
+                  )
+                ],
+              ),
+            )),
     );
   }
 }

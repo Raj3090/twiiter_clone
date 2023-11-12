@@ -13,6 +13,15 @@ final authControllerProvider = StateNotifierProvider<AuthController, bool>(
         authAPI: ref.watch(authApiProvider),
         userAPI: ref.watch(userApiProvider)));
 
+final currentUserDataProvider = FutureProvider((ref) {
+  final currentUserId = ref.watch(userAccountProvider).value!.$id;
+  return ref.watch(userDataProvider(currentUserId)).value;
+});
+
+final userDataProvider = FutureProvider.family((ref, String uid) async {
+  return ref.watch(authControllerProvider.notifier).getUserData(uid);
+});
+
 final userAccountProvider = FutureProvider(
     (ref) => ref.watch(authControllerProvider.notifier).getCurrentUser());
 
@@ -43,7 +52,7 @@ class AuthController extends StateNotifier<bool> {
           name: getNameFromEmail(email),
           bannerPic: '',
           profilePic: '',
-          uid: '',
+          uid: user.$id,
           bio: '',
           isTwitterBlue: false,
           followers: [],

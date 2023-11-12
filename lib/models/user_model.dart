@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
-
   final String email;
   final String name;
   final String bannerPic;
@@ -25,7 +24,6 @@ class UserModel {
     required this.followers,
     required this.following,
   });
-
 
   UserModel copyWith({
     String? email,
@@ -57,7 +55,6 @@ class UserModel {
       'name': name,
       'bannerPic': bannerPic,
       'profilePic': profilePic,
-      'uid': uid,
       'bio': bio,
       'isTwitterBlue': isTwitterBlue,
       'followers': followers,
@@ -71,7 +68,7 @@ class UserModel {
       name: map['name'] as String,
       bannerPic: map['bannerPic'] as String,
       profilePic: map['profilePic'] as String,
-      uid: map['uid'] as String,
+      uid: map['\$id'] ?? '',
       bio: map['bio'] as String,
       isTwitterBlue: map['isTwitterBlue'] as bool,
       followers: List<String>.from(map['followers'] as List<String>),
@@ -81,7 +78,8 @@ class UserModel {
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -92,28 +90,27 @@ class UserModel {
   bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
 
-    return
-      other.email == email &&
-      other.name == name &&
-      other.bannerPic == bannerPic &&
-      other.profilePic == profilePic &&
-      other.uid == uid &&
-      other.bio == bio &&
-      other.isTwitterBlue == isTwitterBlue &&
-      listEquals(other.followers, followers) &&
-      listEquals(other.following, following);
+    return other.email == email &&
+        other.name == name &&
+        other.bannerPic == bannerPic &&
+        other.profilePic == profilePic &&
+        other.uid == uid &&
+        other.bio == bio &&
+        other.isTwitterBlue == isTwitterBlue &&
+        listEquals(other.followers, followers) &&
+        listEquals(other.following, following);
   }
 
   @override
   int get hashCode {
     return email.hashCode ^
-      name.hashCode ^
-      bannerPic.hashCode ^
-      profilePic.hashCode ^
-      uid.hashCode ^
-      bio.hashCode ^
-      isTwitterBlue.hashCode ^
-      followers.hashCode ^
-      following.hashCode;
+        name.hashCode ^
+        bannerPic.hashCode ^
+        profilePic.hashCode ^
+        uid.hashCode ^
+        bio.hashCode ^
+        isTwitterBlue.hashCode ^
+        followers.hashCode ^
+        following.hashCode;
   }
 }

@@ -73,4 +73,9 @@ class AuthController extends StateNotifier<bool> {
     response.fold((error) => showSnackBar(context, error.message),
         (user) => Navigator.push(context, HomeView.route()));
   }
+
+  Future<UserModel> getUserData(String uid) async {
+    final userDocument = await _userAPI.getUserData(uid);
+    return UserModel.fromMap(userDocument.data);
+  }
 }

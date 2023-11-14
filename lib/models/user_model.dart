@@ -68,11 +68,11 @@ class UserModel {
       name: map['name'] as String,
       bannerPic: map['bannerPic'] as String,
       profilePic: map['profilePic'] as String,
-      uid: map['\$id'] ?? '',
+      uid: map['\$id'] as String,
       bio: map['bio'] as String,
       isTwitterBlue: map['isTwitterBlue'] as bool,
-      followers: List<String>.from(map['followers'] as List<String>),
-      following: List<String>.from(map['following'] as List<String>),
+      followers: List<String>.from(map['followers'] ?? []),
+      following: List<String>.from(map['following'] ?? []),
     );
   }
 

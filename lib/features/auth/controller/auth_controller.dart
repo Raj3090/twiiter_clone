@@ -18,7 +18,7 @@ final currentUserDataProvider = FutureProvider((ref) {
   return ref.watch(userDataProvider(currentUserId)).value;
 });
 
-final userDataProvider = FutureProvider.family((ref, String uid) async {
+final userDataProvider = FutureProvider.family((ref, String uid) {
   return ref.watch(authControllerProvider.notifier).getUserData(uid);
 });
 

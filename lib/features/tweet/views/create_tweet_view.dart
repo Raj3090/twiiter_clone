@@ -1,8 +1,12 @@
+import 'dart:io';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:twitter_clone/common/common.dart';
 import 'package:twitter_clone/constants/assets_constants.dart';
+import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
@@ -19,6 +23,14 @@ class CreateTweetView extends ConsumerStatefulWidget {
 
 class _CreateTweetViewState extends ConsumerState<CreateTweetView> {
   final tweetTextController = TextEditingController();
+
+  List<File> selectedImages = <File>[];
+
+  Future<void> onImageSelection() async {
+    selectedImages = await pickImages();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserDataProvider).value;
@@ -78,7 +90,18 @@ class _CreateTweetViewState extends ConsumerState<CreateTweetView> {
                           ),
                         ),
                       ],
-                    )
+                    ),
+                    if (selectedImages.isNotEmpty)
+                      CarouselSlider(
+                          items: selectedImages
+                              .map((file) => Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: Image.file(file)))
+                              .toList(),
+                          options: CarouselOptions(
+                              height: 400, enableInfiniteScroll: false))
                   ],
                 ),
               ),
@@ -93,7 +116,9 @@ class _CreateTweetViewState extends ConsumerState<CreateTweetView> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0).copyWith(left: 16, right: 16),
-              child: SvgPicture.asset(AssetsConstants.galleryIcon),
+              child: GestureDetector(
+                  onTap: onImageSelection,
+                  child: SvgPicture.asset(AssetsConstants.galleryIcon)),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0).copyWith(left: 16, right: 16),

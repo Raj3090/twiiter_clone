@@ -2,15 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/apis/tweet_api.dart';
+import 'package:twitter_clone/core/providers.dart';
 import 'package:twitter_clone/core/tweet_type_enum.dart';
 import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 
+final tweetApiProvider =
+    Provider((ref) => TweetAPI(db: ref.watch(appWriteDataBaseProvider)));
+
 class TweetController extends StateController<bool> {
   final Ref _ref;
-  TweetController({required Ref ref})
+  final TweetAPI _tweetApi;
+  TweetController({required Ref ref, required TweetAPI tweetApi})
       : _ref = ref,
+        _tweetApi = tweetApi,
         super(false);
 
   void shareTweet(BuildContext context, List<File> images, String text) {
@@ -47,6 +54,8 @@ class TweetController extends StateController<bool> {
         commentIds: [],
         id: '',
         shareCount: 0);
+
+    _tweetApi.shareTweet(tweet);
   }
 
   String _getLinkFromText(String text) {

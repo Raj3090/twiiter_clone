@@ -12,6 +12,12 @@ import 'package:twitter_clone/models/tweet_model.dart';
 final tweetApiProvider =
     Provider((ref) => TweetAPI(db: ref.watch(appWriteDataBaseProvider)));
 
+final authControllerProvider =
+    StateNotifierProvider<TweetController, bool>((ref) => TweetController(
+          ref: ref,
+          tweetApi: ref.watch(tweetApiProvider),
+        ));
+
 class TweetController extends StateController<bool> {
   final Ref _ref;
   final TweetAPI _tweetApi;
@@ -35,7 +41,8 @@ class TweetController extends StateController<bool> {
 
   void _shareImageTweet(BuildContext context, List<File> images, String text) {}
 
-  void _shareTextTweet(BuildContext context, List<File> images, String text) {
+  Future<void> _shareTextTweet(
+      BuildContext context, List<File> images, String text) async {
     state = true;
     final hashtags = _getHashTagsFromText(text);
     final link = _getLinkFromText(text);
@@ -55,7 +62,7 @@ class TweetController extends StateController<bool> {
         id: '',
         shareCount: 0);
 
-    _tweetApi.shareTweet(tweet);
+    final res = await _tweetApi.shareTweet(tweet);
   }
 
   String _getLinkFromText(String text) {

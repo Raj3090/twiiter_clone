@@ -12,7 +12,7 @@ import 'package:twitter_clone/models/tweet_model.dart';
 final tweetApiProvider =
     Provider((ref) => TweetAPI(db: ref.watch(appWriteDataBaseProvider)));
 
-final authControllerProvider =
+final tweetControllerProvider =
     StateNotifierProvider<TweetController, bool>((ref) => TweetController(
           ref: ref,
           tweetApi: ref.watch(tweetApiProvider),
@@ -62,7 +62,17 @@ class TweetController extends StateController<bool> {
         id: '',
         shareCount: 0);
 
-    final res = await _tweetApi.shareTweet(tweet);
+    final response = await _tweetApi.shareTweet(tweet);
+
+    state = false;
+
+    response.fold((error) {
+      showSnackBar(context, error.message);
+    }, (r) {
+      if (mounted) {
+        showSnackBar(context, 'Tweeted!');
+      }
+    });
   }
 
   String _getLinkFromText(String text) {

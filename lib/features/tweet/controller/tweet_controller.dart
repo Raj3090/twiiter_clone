@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/apis/storage_api.dart';
 import 'package:twitter_clone/apis/tweet_api.dart';
 import 'package:twitter_clone/core/providers.dart';
 import 'package:twitter_clone/core/tweet_type_enum.dart';
@@ -16,14 +17,20 @@ final tweetControllerProvider =
     StateNotifierProvider<TweetController, bool>((ref) => TweetController(
           ref: ref,
           tweetApi: ref.watch(tweetApiProvider),
+          storageApi: ref.watch(storageProvider),
         ));
 
 class TweetController extends StateController<bool> {
   final Ref _ref;
   final TweetAPI _tweetApi;
-  TweetController({required Ref ref, required TweetAPI tweetApi})
+  final StorageAPI _storageApi;
+  TweetController(
+      {required Ref ref,
+      required TweetAPI tweetApi,
+      required StorageAPI storageApi})
       : _ref = ref,
         _tweetApi = tweetApi,
+        _storageApi = storageApi,
         super(false);
 
   void shareTweet(BuildContext context, List<File> images, String text) {
@@ -39,7 +46,41 @@ class TweetController extends StateController<bool> {
     }
   }
 
-  void _shareImageTweet(BuildContext context, List<File> images, String text) {}
+  Future<void> _shareImageTweet(
+      BuildContext context, List<File> images, String text) async {
+    state = true;
+    final hashtags = _getHashTagsFromText(text);
+    final link = _getLinkFromText(text);
+
+    final currentUser = _ref.read(currentUserDataProvider).value!;
+
+    final imageLinks = await _storageApi.getImageLinks(images);
+
+    final tweet = Tweet(
+        text: text,
+        hashtags: hashtags,
+        link: link,
+        imageLinks: imageLinks,
+        uid: currentUser.uid,
+        tweetType: TweetType.text,
+        tweetedAt: DateTime.now(),
+        likes: [],
+        commentIds: [],
+        id: '',
+        shareCount: 0);
+
+    final response = await _tweetApi.shareTweet(tweet);
+
+    state = false;
+
+    response.fold((error) {
+      showSnackBar(context, error.message);
+    }, (r) {
+      if (mounted) {
+        showSnackBar(context, 'Tweeted!');
+      }
+    });
+  }
 
   Future<void> _shareTextTweet(
       BuildContext context, List<File> images, String text) async {

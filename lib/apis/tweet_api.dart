@@ -8,6 +8,7 @@ import '../models/tweet_model.dart';
 
 abstract class ITweetAPI {
   FutureEither<Document> shareTweet(Tweet tweet);
+  Future<List<Document>> getTweetList();
 }
 
 class TweetAPI implements ITweetAPI {
@@ -27,5 +28,15 @@ class TweetAPI implements ITweetAPI {
     } catch (e, stackTrace) {
       return left(Failure(e.toString(), stackTrace));
     }
+  }
+
+  @override
+  Future<List<Document>> getTweetList() async {
+    final data = await _db.listDocuments(
+      databaseId: AppWriteConstants.databaseId,
+      collectionId: AppWriteConstants.tweetCollectionId,
+    );
+
+    return data.documents;
   }
 }

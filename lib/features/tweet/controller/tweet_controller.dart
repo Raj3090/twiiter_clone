@@ -13,6 +13,9 @@ import 'package:twitter_clone/models/tweet_model.dart';
 final tweetApiProvider =
     Provider((ref) => TweetAPI(db: ref.watch(appWriteDataBaseProvider)));
 
+final tweetListApiProvider = FutureProvider(
+    (ref) => ref.watch(tweetControllerProvider.notifier).getTweets());
+
 final tweetControllerProvider =
     StateNotifierProvider<TweetController, bool>((ref) => TweetController(
           ref: ref,
@@ -32,6 +35,11 @@ class TweetController extends StateController<bool> {
         _tweetApi = tweetApi,
         _storageApi = storageApi,
         super(false);
+
+  Future<List<Tweet>> getTweets() async {
+    final tweetsDoc = await _tweetApi.getTweetList();
+    return tweetsDoc.map((documnet) => Tweet.fromMap(documnet.data)).toList();
+  }
 
   void shareTweet(BuildContext context, List<File> images, String text) {
     if (text.isEmpty) {

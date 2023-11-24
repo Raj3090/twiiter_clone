@@ -1,8 +1,11 @@
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/constants/constants.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/features/tweet/widgets/carousel_image.dart';
 import 'package:twitter_clone/features/tweet/widgets/hashtag_text.dart';
+import 'package:twitter_clone/features/tweet/widgets/tweet_icon_button.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
@@ -58,7 +61,28 @@ class TweetCard extends ConsumerWidget {
                         ),
                         HashTagText(text: tweet.text),
                         if (tweet.imageLinks.isNotEmpty)
-                          CarouselImage(imageLinks: tweet.imageLinks)
+                          CarouselImage(imageLinks: tweet.imageLinks),
+
+                        if (tweet.link.isNotEmpty) ...{
+                          const SizedBox(
+                            height: 16.0,
+                          ),
+                          AnyLinkPreview(
+                            link: tweet.link,
+                            displayDirection: UIDirection.uiDirectionHorizontal,
+                          )
+                        },
+                        Container(
+                          margin: const EdgeInsets.only(top: 12, right: 12),
+                          child: Row(
+                            children: [
+                              TweetIconButton(
+                                  pathName: AssetsConstants.viewsIcon,
+                                  text: "0",
+                                  onTap: () {})
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   )

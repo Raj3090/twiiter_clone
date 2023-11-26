@@ -72,40 +72,7 @@ class TweetCard extends ConsumerWidget {
                             displayDirection: UIDirection.uiDirectionHorizontal,
                           )
                         },
-                        Container(
-                          margin: const EdgeInsets.only(top: 12, right: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              TweetIconButton(
-                                  pathName: AssetsConstants.viewsIcon,
-                                  text: (tweet.commentIds.length +
-                                          tweet.likes.length +
-                                          tweet.shareCount)
-                                      .toString(),
-                                  onTap: () {}),
-                              TweetIconButton(
-                                  pathName: AssetsConstants.commentIcon,
-                                  text: (tweet.commentIds.length).toString(),
-                                  onTap: () {}),
-                              TweetIconButton(
-                                  pathName: AssetsConstants.retweetIcon,
-                                  text: (tweet.shareCount).toString(),
-                                  onTap: () {}),
-                              TweetIconButton(
-                                  pathName: AssetsConstants.likeOutlinedIcon,
-                                  text: (tweet.likes.length).toString(),
-                                  onTap: () {}),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.share_outlined,
-                                    size: 25,
-                                    color: Pallete.greyColor,
-                                  ))
-                            ],
-                          ),
-                        ),
+                        TweetCardActionsWidget(tweet: tweet),
                         const SizedBox(
                           height: 1,
                         )
@@ -124,5 +91,48 @@ class TweetCard extends ConsumerWidget {
           return Text(error.toString());
         },
         loading: () => const Loader());
+  }
+}
+
+class TweetCardActionsWidget extends StatelessWidget {
+  final Tweet tweet;
+  const TweetCardActionsWidget({super.key, required this.tweet});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 12, right: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TweetIconButton(
+              pathName: AssetsConstants.viewsIcon,
+              text: (tweet.commentIds.length +
+                      tweet.likes.length +
+                      tweet.shareCount)
+                  .toString(),
+              onTap: () {}),
+          TweetIconButton(
+              pathName: AssetsConstants.commentIcon,
+              text: (tweet.commentIds.length).toString(),
+              onTap: () {}),
+          TweetIconButton(
+              pathName: AssetsConstants.retweetIcon,
+              text: (tweet.shareCount).toString(),
+              onTap: () {}),
+          TweetIconButton(
+              pathName: AssetsConstants.likeOutlinedIcon,
+              text: (tweet.likes.length).toString(),
+              onTap: () {}),
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.share_outlined,
+                size: 25,
+                color: Pallete.greyColor,
+              ))
+        ],
+      ),
+    );
   }
 }

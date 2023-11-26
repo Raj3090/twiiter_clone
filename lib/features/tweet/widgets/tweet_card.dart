@@ -26,7 +26,7 @@ class TweetCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    margin: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.only(left: 8, right: 8),
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(userData.profilePic),
                       radius: 30,
@@ -75,18 +75,47 @@ class TweetCard extends ConsumerWidget {
                         Container(
                           margin: const EdgeInsets.only(top: 12, right: 12),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TweetIconButton(
                                   pathName: AssetsConstants.viewsIcon,
-                                  text: "0",
-                                  onTap: () {})
+                                  text: (tweet.commentIds.length +
+                                          tweet.likes.length +
+                                          tweet.shareCount)
+                                      .toString(),
+                                  onTap: () {}),
+                              TweetIconButton(
+                                  pathName: AssetsConstants.commentIcon,
+                                  text: (tweet.commentIds.length).toString(),
+                                  onTap: () {}),
+                              TweetIconButton(
+                                  pathName: AssetsConstants.retweetIcon,
+                                  text: (tweet.shareCount).toString(),
+                                  onTap: () {}),
+                              TweetIconButton(
+                                  pathName: AssetsConstants.likeOutlinedIcon,
+                                  text: (tweet.likes.length).toString(),
+                                  onTap: () {}),
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.share_outlined,
+                                    size: 25,
+                                    color: Pallete.greyColor,
+                                  ))
                             ],
                           ),
+                        ),
+                        const SizedBox(
+                          height: 1,
                         )
                       ],
                     ),
                   )
                 ],
+              ),
+              const Divider(
+                color: Pallete.greyColor,
               )
             ],
           );

@@ -10,11 +10,16 @@ import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 
-final tweetApiProvider =
-    Provider((ref) => TweetAPI(db: ref.watch(appWriteDataBaseProvider)));
+final tweetApiProvider = Provider((ref) => TweetAPI(
+    db: ref.watch(appWriteDataBaseProvider),
+    realtime: ref.watch(appWriteRealtimeProvider)));
 
 final tweetListApiProvider = FutureProvider(
     (ref) => ref.watch(tweetControllerProvider.notifier).getTweets());
+
+final latestTweetProvider = StreamProvider.autoDispose((ref) {
+  return ref.watch(tweetApiProvider).getLatestTweet();
+});
 
 final tweetControllerProvider =
     StateNotifierProvider<TweetController, bool>((ref) => TweetController(
@@ -120,6 +125,7 @@ class TweetController extends StateController<bool> {
     }, (r) {
       if (mounted) {
         showSnackBar(context, 'Tweeted!');
+        Navigator.pop(context);
       }
     });
   }

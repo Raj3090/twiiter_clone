@@ -9,6 +9,7 @@ import 'package:twitter_clone/core/tweet_type_enum.dart';
 import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
+import 'package:twitter_clone/models/user_model.dart';
 
 final tweetApiProvider = Provider((ref) => TweetAPI(
     db: ref.watch(appWriteDataBaseProvider),
@@ -154,5 +155,27 @@ class TweetController extends StateController<bool> {
       }
     }
     return hashtags;
+  }
+
+  Future<void> likeTweet(
+    Tweet tweet,
+    UserModel userModel,
+  ) async {
+    List<String> likes = [];
+
+    if (tweet.likes.contains(userModel.uid)) {
+      likes.remove(userModel.uid);
+    } else {
+      likes.add(userModel.uid);
+    }
+
+    tweet = tweet.copyWith(likes: likes);
+    final response = await _tweetApi.likeTweet(tweet);
+
+    response.fold((error) {
+      print('TweetCardActionsWidget3 ${error.message}');
+    }, (r) {
+      if (mounted) {}
+    });
   }
 }

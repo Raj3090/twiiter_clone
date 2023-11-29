@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:twitter_clone/constants/constants.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
+import 'package:twitter_clone/features/tweet/controller/tweet_controller.dart';
 import 'package:twitter_clone/features/tweet/widgets/carousel_image.dart';
 import 'package:twitter_clone/features/tweet/widgets/hashtag_text.dart';
 import 'package:twitter_clone/features/tweet/widgets/tweet_icon_button.dart';
@@ -96,12 +97,17 @@ class TweetCard extends ConsumerWidget {
   }
 }
 
-class TweetCardActionsWidget extends StatelessWidget {
+class TweetCardActionsWidget extends ConsumerWidget {
   final Tweet tweet;
   const TweetCardActionsWidget({super.key, required this.tweet});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    print('TweetCardActionsWidget1');
+    final currentUser = ref.watch(currentUserDataProvider).value;
+
+    final tweetController = ref.watch(tweetControllerProvider.notifier);
+
     return Container(
       margin: const EdgeInsets.only(top: 12, right: 12),
       child: Row(
@@ -123,20 +129,23 @@ class TweetCardActionsWidget extends StatelessWidget {
               text: (tweet.shareCount).toString(),
               onTap: () {}),
           LikeButton(
-            size: 25,
-            likeBuilder: (isLiked) {
-              isLiked
-                  ? SvgPicture.asset(
-                      AssetsConstants.likeFilledIcon,
-                      colorFilter: const ColorFilter.mode(
-                          Pallete.redColor, BlendMode.srcIn),
-                    )
-                  : SvgPicture.asset(
-                      AssetsConstants.likeOutlinedIcon,
-                      colorFilter: const ColorFilter.mode(
-                          Pallete.greyColor, BlendMode.srcIn),
-                    );
+            onTap: (isLiked) async {
+              tweetController.likeTweet(tweet, currentUser);
+              return !isLiked;
             },
+            isLiked: tweet.likes.contains(currentUser!.uid),
+            size: 25,
+            likeBuilder: (isLiked) => isLiked
+                ? SvgPicture.asset(
+                    AssetsConstants.likeFilledIcon,
+                    colorFilter: const ColorFilter.mode(
+                        Pallete.redColor, BlendMode.srcIn),
+                  )
+                : SvgPicture.asset(
+                    AssetsConstants.likeOutlinedIcon,
+                    colorFilter: const ColorFilter.mode(
+                        Pallete.greyColor, BlendMode.srcIn),
+                  ),
             likeCount: tweet.likes.length,
           ),
           IconButton(

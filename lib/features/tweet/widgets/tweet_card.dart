@@ -127,7 +127,11 @@ class TweetCardActionsWidget extends ConsumerWidget {
           TweetIconButton(
               pathName: AssetsConstants.retweetIcon,
               text: (tweet.shareCount).toString(),
-              onTap: () {}),
+              onTap: () {
+                ref
+                    .read(tweetControllerProvider.notifier)
+                    .updateShareCountTweet(context, tweet, currentUser!);
+              }),
           LikeButton(
             onTap: (isLiked) async {
               tweetController.likeTweet(tweet, currentUser);

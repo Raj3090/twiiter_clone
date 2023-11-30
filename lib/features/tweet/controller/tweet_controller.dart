@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/apis/storage_api.dart';
@@ -81,6 +82,7 @@ class TweetController extends StateController<bool> {
         likes: [],
         commentIds: [],
         id: '',
+        retweetedBy: '',
         shareCount: 0);
 
     final response = await _tweetApi.shareTweet(tweet);
@@ -115,6 +117,7 @@ class TweetController extends StateController<bool> {
         likes: [],
         commentIds: [],
         id: '',
+        retweetedBy: '',
         shareCount: 0);
 
     final response = await _tweetApi.shareTweet(tweet);
@@ -172,10 +175,30 @@ class TweetController extends StateController<bool> {
     tweet = tweet.copyWith(likes: likes);
     final response = await _tweetApi.likeTweet(tweet);
 
-    response.fold((error) {
-      print('TweetCardActionsWidget3 ${error.message}');
-    }, (r) {
+    response.fold((error) {}, (r) {
       if (mounted) {}
+    });
+  }
+
+  Future<void> updateShareCountTweet(
+    BuildContext context,
+    Tweet tweet,
+    UserModel userModel,
+  ) async {
+    final reTweet = tweet.copyWith(
+        retweetedBy: userModel.name, shareCount: tweet.shareCount + 1);
+
+    final response = await _tweetApi.updateReshareCount(reTweet);
+
+    response.fold((error) {
+      showSnackBar(context, error.message);
+    }, (r) async {
+      if (mounted) {
+        tweet.copyWith(shareCount: 0, id: ID.unique());
+        final res2 = await _tweetApi.shareTweet(tweet);
+        res2.fold((error) => showSnackBar(context, error.message),
+            (r) => showSnackBar(context, 'retweeted!'));
+      }
     });
   }
 }

@@ -180,7 +180,7 @@ class TweetController extends StateController<bool> {
     });
   }
 
-  Future<void> updateShareCountTweet(
+  Future<void> retweet(
     BuildContext context,
     Tweet tweet,
     UserModel userModel,

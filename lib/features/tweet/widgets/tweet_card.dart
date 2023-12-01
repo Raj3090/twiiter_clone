@@ -39,7 +39,21 @@ class TweetCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //retweeted
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              AssetsConstants.retweetIcon,
+                              color: Pallete.greyColor,
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              tweet.retweetedBy,
+                              style: const TextStyle(color: Pallete.blueColor),
+                            )
+                          ],
+                        ),
                         Row(
                           children: [
                             Container(
@@ -65,7 +79,6 @@ class TweetCard extends ConsumerWidget {
                         HashTagText(text: tweet.text),
                         if (tweet.imageLinks.isNotEmpty)
                           CarouselImage(imageLinks: tweet.imageLinks),
-
                         if (tweet.link.isNotEmpty) ...{
                           const SizedBox(
                             height: 16.0,
@@ -130,7 +143,7 @@ class TweetCardActionsWidget extends ConsumerWidget {
               onTap: () {
                 ref
                     .read(tweetControllerProvider.notifier)
-                    .updateShareCountTweet(context, tweet, currentUser!);
+                    .retweet(context, tweet, currentUser!);
               }),
           LikeButton(
             onTap: (isLiked) async {

@@ -23,7 +23,10 @@ class TweetList extends ConsumerWidget {
                     'databases.*.collections.${AppWriteConstants.tweetCollectionId}.documents.*.update')) {
                   final newTweet = Tweet.fromMap(data.payload);
 
-                  final tweetId = newTweet.id;
+                  RegExp pattern = RegExp(r'documents\.(.*?)\.update');
+                  Match? match = pattern.firstMatch(data.events[0]);
+
+                  final tweetId = match!.group(1)!;
 
                   final existingTweet =
                       tweetList.where((element) => element.id == tweetId).first;

@@ -185,16 +185,21 @@ class TweetController extends StateController<bool> {
     Tweet tweet,
     UserModel userModel,
   ) async {
-    final reTweet = tweet.copyWith(
-        retweetedBy: userModel.name, shareCount: tweet.shareCount + 1);
+    tweet = tweet.copyWith(shareCount: tweet.shareCount + 1);
 
-    final response = await _tweetApi.updateReshareCount(reTweet);
+    final response = await _tweetApi.updateReshareCount(tweet);
 
     response.fold((error) {
       showSnackBar(context, error.message);
     }, (r) async {
       if (mounted) {
-        tweet.copyWith(shareCount: 0, id: ID.unique());
+        tweet = tweet.copyWith(
+            likes: [],
+            commentIds: [],
+            retweetedBy: userModel.name,
+            tweetedAt: DateTime.now(),
+            shareCount: 0,
+            id: ID.unique());
         final res2 = await _tweetApi.shareTweet(tweet);
         res2.fold((error) => showSnackBar(context, error.message),
             (r) => showSnackBar(context, 'retweeted!'));

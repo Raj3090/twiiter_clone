@@ -116,7 +116,6 @@ class TweetCardActionsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('TweetCardActionsWidget1');
     final currentUser = ref.watch(currentUserDataProvider).value;
 
     final tweetController = ref.watch(tweetControllerProvider.notifier);

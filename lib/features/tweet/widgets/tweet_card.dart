@@ -39,21 +39,24 @@ class TweetCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              AssetsConstants.retweetIcon,
-                              color: Pallete.greyColor,
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              tweet.retweetedBy,
-                              style: const TextStyle(color: Pallete.blueColor),
-                            )
-                          ],
-                        ),
+                        if (tweet.retweetedBy.isNotEmpty)
+                          Row(
+                            children: [
+                              SvgPicture.asset(
+                                AssetsConstants.retweetIcon,
+                                colorFilter: const ColorFilter.mode(
+                                    Pallete.greyColor, BlendMode.srcIn),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                tweet.retweetedBy,
+                                style:
+                                    const TextStyle(color: Pallete.blueColor),
+                              )
+                            ],
+                          ),
                         Row(
                           children: [
                             Container(
@@ -75,6 +78,9 @@ class TweetCard extends ConsumerWidget {
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(
+                          height: 16,
                         ),
                         HashTagText(text: tweet.text),
                         if (tweet.imageLinks.isNotEmpty)

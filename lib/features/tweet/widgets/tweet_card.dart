@@ -15,6 +15,8 @@ import 'package:twitter_clone/theme/pallete.dart';
 import '../../../common/loading_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../views/tweet_reply_view.dart';
+
 class TweetCard extends ConsumerWidget {
   final Tweet tweet;
   const TweetCard({super.key, required this.tweet});
@@ -36,69 +38,75 @@ class TweetCard extends ConsumerWidget {
                     ),
                   ),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (tweet.retweetedBy.isNotEmpty)
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, TweetReplyScreen.route(tweet));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (tweet.retweetedBy.isNotEmpty)
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  AssetsConstants.retweetIcon,
+                                  colorFilter: const ColorFilter.mode(
+                                      Pallete.greyColor, BlendMode.srcIn),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  tweet.retweetedBy,
+                                  style:
+                                      const TextStyle(color: Pallete.blueColor),
+                                )
+                              ],
+                            ),
                           Row(
                             children: [
-                              SvgPicture.asset(
-                                AssetsConstants.retweetIcon,
-                                colorFilter: const ColorFilter.mode(
-                                    Pallete.greyColor, BlendMode.srcIn),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                tweet.retweetedBy,
-                                style:
-                                    const TextStyle(color: Pallete.blueColor),
-                              )
-                            ],
-                          ),
-                        Row(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(right: 8),
-                              child: Text(
-                                userData.name,
-                                style: const TextStyle(
-                                  color: Pallete.whiteColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
+                              Container(
+                                margin: const EdgeInsets.only(right: 8),
+                                child: Text(
+                                  userData.name,
+                                  style: const TextStyle(
+                                    color: Pallete.whiteColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Text(
-                              '@${userData.name} ${timeago.format(tweet.tweetedAt, locale: 'en_short')}',
-                              style: const TextStyle(
-                                color: Pallete.greyColor,
-                                fontSize: 16,
+                              Text(
+                                '@${userData.name} ${timeago.format(tweet.tweetedAt, locale: 'en_short')}',
+                                style: const TextStyle(
+                                  color: Pallete.greyColor,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        HashTagText(text: tweet.text),
-                        if (tweet.imageLinks.isNotEmpty)
-                          CarouselImage(imageLinks: tweet.imageLinks),
-                        if (tweet.link.isNotEmpty) ...{
-                          const SizedBox(
-                            height: 16.0,
+                            ],
                           ),
-                          AnyLinkPreview(
-                            link: tweet.link,
-                            displayDirection: UIDirection.uiDirectionHorizontal,
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          HashTagText(text: tweet.text),
+                          if (tweet.imageLinks.isNotEmpty)
+                            CarouselImage(imageLinks: tweet.imageLinks),
+                          if (tweet.link.isNotEmpty) ...{
+                            const SizedBox(
+                              height: 16.0,
+                            ),
+                            AnyLinkPreview(
+                              link: tweet.link,
+                              displayDirection:
+                                  UIDirection.uiDirectionHorizontal,
+                            )
+                          },
+                          TweetCardActionsWidget(tweet: tweet),
+                          const SizedBox(
+                            height: 1,
                           )
-                        },
-                        TweetCardActionsWidget(tweet: tweet),
-                        const SizedBox(
-                          height: 1,
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                   )
                 ],

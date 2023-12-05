@@ -17,8 +17,9 @@ class Tweet {
   final List<String> commentIds;
   final String id;
   final int shareCount;
-
+  final String repliedTo;
   final String retweetedBy;
+
   Tweet({
     required this.text,
     required this.hashtags,
@@ -32,6 +33,7 @@ class Tweet {
     required this.id,
     required this.shareCount,
     required this.retweetedBy,
+    required this.repliedTo,
   });
 
   Tweet copyWith({
@@ -47,6 +49,7 @@ class Tweet {
     String? id,
     int? shareCount,
     String? retweetedBy,
+    String? repliedTo,
   }) {
     return Tweet(
       text: text ?? this.text,
@@ -61,6 +64,7 @@ class Tweet {
       id: id ?? this.id,
       shareCount: shareCount ?? this.shareCount,
       retweetedBy: retweetedBy ?? this.retweetedBy,
+      repliedTo: repliedTo ?? this.repliedTo,
     );
   }
 
@@ -77,6 +81,7 @@ class Tweet {
       'commentIds': commentIds,
       'shareCount': shareCount,
       'retweetedBy': retweetedBy,
+      'repliedTo': repliedTo,
     };
   }
 
@@ -94,6 +99,7 @@ class Tweet {
       id: map['\$id'] as String,
       shareCount: map['shareCount'] as int,
       retweetedBy: map['retweetedBy'] as String,
+      repliedTo: map['repliedTo'] as String,
     );
   }
 
@@ -104,7 +110,7 @@ class Tweet {
 
   @override
   String toString() {
-    return 'Tweet(text: $text, hashtags: $hashtags, link: $link, imageLinks: $imageLinks, uid: $uid, tweetType: $tweetType, tweetedAt: $tweetedAt, likes: $likes, commentIds: $commentIds, id: $id, shareCount: $shareCount,retweetedBy:$retweetedBy)';
+    return 'Tweet(text: $text, hashtags: $hashtags, link: $link, imageLinks: $imageLinks, uid: $uid, tweetType: $tweetType, tweetedAt: $tweetedAt, likes: $likes, commentIds: $commentIds, id: $id, shareCount: $shareCount,retweetedBy:$retweetedBy,repliedTo:$repliedTo)';
   }
 
   @override
@@ -122,6 +128,7 @@ class Tweet {
         listEquals(other.commentIds, commentIds) &&
         other.id == id &&
         other.shareCount == shareCount &&
+        other.repliedTo == repliedTo &&
         other.retweetedBy == retweetedBy;
   }
 
@@ -138,6 +145,7 @@ class Tweet {
         commentIds.hashCode ^
         id.hashCode ^
         shareCount.hashCode ^
+        repliedTo.hashCode ^
         retweetedBy.hashCode;
   }
 }

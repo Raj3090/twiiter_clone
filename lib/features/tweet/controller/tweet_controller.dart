@@ -48,21 +48,22 @@ class TweetController extends StateController<bool> {
     return tweetsDoc.map((documnet) => Tweet.fromMap(documnet.data)).toList();
   }
 
-  void shareTweet(BuildContext context, List<File> images, String text) {
+  void shareTweet(
+      BuildContext context, List<File> images, String text, String repliedTo) {
     if (text.isEmpty) {
       showSnackBar(context, 'Please add a tweet');
       return;
     }
 
     if (images.isNotEmpty) {
-      _shareImageTweet(context, images, text);
+      _shareImageTweet(context, images, text, repliedTo);
     } else {
-      _shareTextTweet(context, images, text);
+      _shareTextTweet(context, images, text, repliedTo);
     }
   }
 
-  Future<void> _shareImageTweet(
-      BuildContext context, List<File> images, String text) async {
+  Future<void> _shareImageTweet(BuildContext context, List<File> images,
+      String text, String repliedTo) async {
     state = true;
     final hashtags = _getHashTagsFromText(text);
     final link = _getLinkFromText(text);
@@ -83,6 +84,7 @@ class TweetController extends StateController<bool> {
         commentIds: [],
         id: '',
         retweetedBy: '',
+        repliedTo: repliedTo,
         shareCount: 0);
 
     final response = await _tweetApi.shareTweet(tweet);
@@ -98,8 +100,8 @@ class TweetController extends StateController<bool> {
     });
   }
 
-  Future<void> _shareTextTweet(
-      BuildContext context, List<File> images, String text) async {
+  Future<void> _shareTextTweet(BuildContext context, List<File> images,
+      String text, String repliedTo) async {
     state = true;
     final hashtags = _getHashTagsFromText(text);
     final link = _getLinkFromText(text);
@@ -118,6 +120,7 @@ class TweetController extends StateController<bool> {
         commentIds: [],
         id: '',
         retweetedBy: '',
+        repliedTo: '',
         shareCount: 0);
 
     final response = await _tweetApi.shareTweet(tweet);

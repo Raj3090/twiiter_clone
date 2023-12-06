@@ -23,6 +23,10 @@ final latestTweetProvider = StreamProvider.autoDispose((ref) {
   return ref.watch(tweetApiProvider).getLatestTweet();
 });
 
+final getRepliedToTweetListProvider = FutureProvider.family(
+    (ref, Tweet tweet) =>
+        ref.watch(tweetControllerProvider.notifier).getRepliedToTweets(tweet));
+
 final tweetControllerProvider =
     StateNotifierProvider<TweetController, bool>((ref) => TweetController(
           ref: ref,
@@ -45,6 +49,12 @@ class TweetController extends StateController<bool> {
 
   Future<List<Tweet>> getTweets() async {
     final tweetsDoc = await _tweetApi.getTweetList();
+    return tweetsDoc.map((documnet) => Tweet.fromMap(documnet.data)).toList();
+  }
+
+  Future<List<Tweet>> getRepliedToTweets(Tweet tweet) async {
+    print('calling => getRepliedToTweets');
+    final tweetsDoc = await _tweetApi.getRepliedToTweetList(tweet);
     return tweetsDoc.map((documnet) => Tweet.fromMap(documnet.data)).toList();
   }
 
@@ -120,7 +130,7 @@ class TweetController extends StateController<bool> {
         commentIds: [],
         id: '',
         retweetedBy: '',
-        repliedTo: '',
+        repliedTo: repliedTo,
         shareCount: 0);
 
     final response = await _tweetApi.shareTweet(tweet);

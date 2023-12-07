@@ -29,29 +29,41 @@ class TweetReplyScreen extends ConsumerWidget {
               data: (tweetList) {
                 return ref.watch(latestTweetProvider).when(
                     data: (data) {
-                      // if (data.events.contains(
-                      //     'databases.*.collections.${AppWriteConstants.tweetCollectionId}.documents.*.create')) {
-                      //   tweetList.insert(0, Tweet.fromMap(data.payload));
-                      // } else if (data.events.contains(
-                      //     'databases.*.collections.${AppWriteConstants.tweetCollectionId}.documents.*.update')) {
-                      //   final newTweet = Tweet.fromMap(data.payload);
+                      final latestTweet = Tweet.fromMap(data.payload);
+                      bool isTweetAlreadyPresent = false;
 
-                      //   RegExp pattern = RegExp(r'documents\.(.*?)\.update');
-                      //   Match? match = pattern.firstMatch(data.events[0]);
+                      for (final Tweet tweetModel in tweetList) {
+                        if (latestTweet.id == tweetModel.id) {
+                          isTweetAlreadyPresent = true;
+                        }
+                      }
+                      if (!isTweetAlreadyPresent &&
+                          latestTweet.repliedTo == tweet.id) {
+                        if (data.events.contains(
+                            'databases.*.collections.${AppWriteConstants.tweetCollectionId}.documents.*.create')) {
+                          tweetList.insert(0, Tweet.fromMap(data.payload));
+                        } else if (data.events.contains(
+                            'databases.*.collections.${AppWriteConstants.tweetCollectionId}.documents.*.update')) {
+                          final newTweet = Tweet.fromMap(data.payload);
 
-                      //   final tweetId = match!.group(1)!;
+                          RegExp pattern = RegExp(r'documents\.(.*?)\.update');
+                          Match? match = pattern.firstMatch(data.events[0]);
 
-                      //   final existingTweet = tweetList
-                      //       .where((element) => element.id == tweetId)
-                      //       .first;
+                          final tweetId = match!.group(1)!;
 
-                      //   final index = tweetList.indexOf(existingTweet);
+                          final existingTweet = tweetList
+                              .where((element) => element.id == tweetId)
+                              .first;
 
-                      //   tweetList
-                      //       .removeWhere((element) => element.id == tweetId);
+                          final index = tweetList.indexOf(existingTweet);
 
-                      //   tweetList.insert(index, newTweet);
-                      // }
+                          tweetList
+                              .removeWhere((element) => element.id == tweetId);
+
+                          tweetList.insert(index, newTweet);
+                        }
+                      }
+
                       return Expanded(
                         child: ListView.builder(
                             itemCount: tweetList.length,

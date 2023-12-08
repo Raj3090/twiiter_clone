@@ -88,6 +88,23 @@ class TweetCard extends ConsumerWidget {
                           const SizedBox(
                             height: 16,
                           ),
+                          if (tweet.repliedTo.isNotEmpty)
+                            RichText(
+                                text: const TextSpan(
+                                    text: 'Replying to ',
+                                    style: TextStyle(
+                                      color: Pallete.greyColor,
+                                      fontSize: 16,
+                                    ),
+                                    children: [
+                                  TextSpan(
+                                    text: '@User Name',
+                                    style: TextStyle(
+                                      color: Pallete.greyColor,
+                                      fontSize: 16,
+                                    ),
+                                  )
+                                ])),
                           HashTagText(text: tweet.text),
                           if (tweet.imageLinks.isNotEmpty)
                             CarouselImage(imageLinks: tweet.imageLinks),

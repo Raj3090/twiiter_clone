@@ -34,6 +34,9 @@ final tweetControllerProvider =
           storageApi: ref.watch(storageProvider),
         ));
 
+final getTweetByIdProvider = FutureProvider.family((ref, String id) =>
+    ref.watch(tweetControllerProvider.notifier).getTweetById(id));
+
 class TweetController extends StateController<bool> {
   final Ref _ref;
   final TweetAPI _tweetApi;
@@ -50,6 +53,11 @@ class TweetController extends StateController<bool> {
   Future<List<Tweet>> getTweets() async {
     final tweetsDoc = await _tweetApi.getTweetList();
     return tweetsDoc.map((documnet) => Tweet.fromMap(documnet.data)).toList();
+  }
+
+  Future<Tweet> getTweetById(String id) async {
+    final tweetsDoc = await _tweetApi.getTweetById(id);
+    return Tweet.fromMap(tweetsDoc.data);
   }
 
   Future<List<Tweet>> getRepliedToTweets(Tweet tweet) async {

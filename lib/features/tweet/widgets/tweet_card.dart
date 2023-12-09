@@ -89,22 +89,36 @@ class TweetCard extends ConsumerWidget {
                             height: 16,
                           ),
                           if (tweet.repliedTo.isNotEmpty)
-                            RichText(
-                                text: const TextSpan(
-                                    text: 'Replying to ',
-                                    style: TextStyle(
-                                      color: Pallete.greyColor,
-                                      fontSize: 16,
-                                    ),
-                                    children: [
-                                  TextSpan(
-                                    text: '@User Name',
-                                    style: TextStyle(
-                                      color: Pallete.greyColor,
-                                      fontSize: 16,
-                                    ),
-                                  )
-                                ])),
+                            ref
+                                .watch(getTweetByIdProvider(tweet.repliedTo))
+                                .when(
+                              data: (data) {
+                                final originalTweetUser =
+                                    ref.read(userDataProvider(data.uid)).value;
+                                return RichText(
+                                    text: TextSpan(
+                                        text: 'Replying to ',
+                                        style: const TextStyle(
+                                          color: Pallete.greyColor,
+                                          fontSize: 16,
+                                        ),
+                                        children: [
+                                      TextSpan(
+                                        text: '@${originalTweetUser?.name}',
+                                        style: const TextStyle(
+                                          color: Pallete.blueColor,
+                                          fontSize: 16,
+                                        ),
+                                      )
+                                    ]));
+                              },
+                              error: (error, stackTrace) {
+                                return const Text('something wrong!');
+                              },
+                              loading: () {
+                                return const Loader();
+                              },
+                            ),
                           HashTagText(text: tweet.text),
                           if (tweet.imageLinks.isNotEmpty)
                             CarouselImage(imageLinks: tweet.imageLinks),

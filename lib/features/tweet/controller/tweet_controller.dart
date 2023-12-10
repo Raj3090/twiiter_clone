@@ -61,7 +61,6 @@ class TweetController extends StateController<bool> {
   }
 
   Future<List<Tweet>> getRepliedToTweets(Tweet tweet) async {
-    print('calling => getRepliedToTweets');
     final tweetsDoc = await _tweetApi.getRepliedToTweetList(tweet);
     return tweetsDoc.map((documnet) => Tweet.fromMap(documnet.data)).toList();
   }

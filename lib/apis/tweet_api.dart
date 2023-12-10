@@ -50,7 +50,6 @@ class TweetAPI implements ITweetAPI {
 
   @override
   Stream<RealtimeMessage> getLatestTweet() {
-    print('calling => getLatestTweet');
     return _realtime.subscribe([
       'databases.${AppWriteConstants.databaseId}.collections.${AppWriteConstants.tweetCollectionId}.documents'
     ]).stream;

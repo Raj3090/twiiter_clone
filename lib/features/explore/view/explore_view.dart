@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/common/loading_page.dart';
+import 'package:twitter_clone/features/explore/controller/explore_controller.dart';
+import 'package:twitter_clone/features/explore/widgets/search_tile.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
 class ExploreView extends ConsumerStatefulWidget {
@@ -23,6 +26,9 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
         title: SizedBox(
           height: 50,
           child: TextField(
+            onSubmitted: (value) {
+              setState(() {});
+            },
             controller: searchController,
             decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(10).copyWith(left: 24),
@@ -34,6 +40,23 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
           ),
         ),
       ),
+      body: ref.watch(searchUserByNameProvider(searchController.text)).when(
+          data: (userList) {
+        return ListView.builder(
+          itemCount: userList.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: SearchTile(
+                userModel: userList[index],
+              ),
+            );
+          },
+        );
+      }, error: (error, stackTrace) {
+        return Text(error.toString());
+      }, loading: () {
+        return const Loader();
+      }),
     );
   }
 

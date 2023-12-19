@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/features/user_profile/widgets/user_profile.dart';
 import 'package:twitter_clone/models/user_model.dart';
 
 class UserProfileView extends ConsumerStatefulWidget {
@@ -19,6 +20,10 @@ class UserProfileView extends ConsumerStatefulWidget {
 class _UserProfileViewState extends ConsumerState<UserProfileView> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: UserProfile(
+        userModel: widget.userModel,
+      ),
+    );
   }
 }

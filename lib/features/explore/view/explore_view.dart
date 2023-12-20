@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/common/loading_page.dart';
 import 'package:twitter_clone/features/explore/controller/explore_controller.dart';
 import 'package:twitter_clone/features/explore/widgets/search_tile.dart';
-import 'package:twitter_clone/features/user_profile/views/user_profile_view.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
 class ExploreView extends ConsumerStatefulWidget {

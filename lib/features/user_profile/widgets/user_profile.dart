@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/models/user_model.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
@@ -9,6 +10,7 @@ class UserProfile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserDataProvider).value;
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
@@ -23,7 +25,30 @@ class UserProfile extends ConsumerWidget {
                         ? Container(
                             color: Pallete.blueColor,
                           )
-                        : Image.network(userModel.bannerPic))
+                        : Image.network(userModel.bannerPic)),
+                Positioned(
+                    bottom: 0,
+                    left: 16,
+                    child: CircleAvatar(
+                      radius: 36,
+                      backgroundImage: NetworkImage(userModel.profilePic),
+                    )),
+                Container(
+                  alignment: Alignment.bottomRight,
+                  margin: const EdgeInsets.all(16),
+                  child: OutlinedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: const BorderSide(color: Pallete.whiteColor),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 25)),
+                      onPressed: () {},
+                      child: Text(
+                        currentUser?.uid != userModel.uid ? 'Follow' : 'Edit',
+                        style: const TextStyle(color: Pallete.whiteColor),
+                      )),
+                )
               ],
             ),
           )

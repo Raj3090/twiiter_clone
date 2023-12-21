@@ -51,10 +51,34 @@ class UserProfile extends ConsumerWidget {
                 )
               ],
             ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+                delegate: SliverChildListDelegate([
+              Text(
+                userModel.name,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                    color: Pallete.whiteColor),
+              ),
+              Text(
+                '@${userModel.name}',
+                style: const TextStyle(fontSize: 17, color: Pallete.greyColor),
+              ),
+              Text(
+                userModel.bio,
+                style: const TextStyle(fontSize: 17, color: Pallete.greyColor),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+            ])),
           )
         ];
       },
-      body: const Text('data'),
+      body: Container(),
     );
   }
 }

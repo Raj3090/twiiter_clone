@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/features/tweet/widgets/tweet_list.dart';
+import 'package:twitter_clone/features/user_profile/views/edit_profile_view.dart';
 import 'package:twitter_clone/features/user_profile/widgets/follow_count.dart';
 import 'package:twitter_clone/models/user_model.dart';
 import 'package:twitter_clone/theme/pallete.dart';
@@ -45,7 +46,9 @@ class UserProfile extends ConsumerWidget {
                             side: const BorderSide(color: Pallete.whiteColor),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 25)),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, EditProfileView.route());
+                      },
                       child: Text(
                         currentUser?.uid != userModel.uid ? 'Follow' : 'Edit',
                         style: const TextStyle(color: Pallete.whiteColor),

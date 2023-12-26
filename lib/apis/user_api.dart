@@ -17,6 +17,7 @@ abstract class IUserAPI {
   FutureEitherVoid saveUserData(UserModel userModel);
   Future<Document> getUserData(String uid);
   Future<List<Document>> searchUserByName(String name);
+  FutureEitherVoid updateUserData(UserModel userModel);
 }
 
 class UserAPI implements IUserAPI {
@@ -54,5 +55,19 @@ class UserAPI implements IUserAPI {
         queries: [Query.search('name', name)]);
 
     return userDoc.documents;
+  }
+
+  @override
+  FutureEitherVoid updateUserData(UserModel userModel) async {
+    try {
+      await _db.updateDocument(
+          databaseId: AppWriteConstants.databaseId,
+          collectionId: AppWriteConstants.userCollectionId,
+          documentId: userModel.uid,
+          data: userModel.toMap());
+      return right(null);
+    } catch (e, stackTrace) {
+      return left(Failure(e.toString(), stackTrace));
+    }
   }
 }

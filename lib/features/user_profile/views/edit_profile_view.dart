@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/common/loading_page.dart';
+import 'package:twitter_clone/features/user_profile/controller/user_profile_controller.dart';
 
 import '../../../core/utils.dart';
 import '../../../theme/pallete.dart';
@@ -20,8 +21,8 @@ class EditProfileView extends ConsumerStatefulWidget {
 }
 
 class _EditProfileViewState extends ConsumerState<EditProfileView> {
-  final nameController = TextEditingController();
-  final bioController = TextEditingController();
+  TextEditingController? nameController;
+  TextEditingController? bioController;
 
   File? bannerImage;
   File? profileImage;
@@ -45,8 +46,16 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final userModel = ref.read(currentUserDataProvider).value;
+    nameController = TextEditingController(text: userModel?.name ?? '');
+    bioController = TextEditingController(text: userModel?.bio ?? '');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final userModel = ref.watch(currentUserDataProvider).value;
+    final userModel = ref.read(currentUserDataProvider).value;
     return userModel == null
         ? const Loader()
         : Scaffold(
@@ -54,7 +63,16 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               title: const Text('Edit Profile'),
               centerTitle: false,
               actions: [
-                TextButton(onPressed: () {}, child: const Text('Save'))
+                TextButton(
+                    onPressed: () {
+                      final updatedUser = userModel.copyWith(
+                          name: nameController?.text, bio: bioController?.text);
+                      ref
+                          .watch(userProfileControllerProvider.notifier)
+                          .saveUserProfileData(
+                              updatedUser, bannerImage, profileImage, context);
+                    },
+                    child: const Text('Save'))
               ],
             ),
             body: Column(
@@ -82,7 +100,10 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
                                     ? Container(
                                         color: Pallete.blueColor,
                                       )
-                                    : Image.network(userModel.bannerPic)),
+                                    : Image.network(
+                                        userModel.bannerPic,
+                                        fit: BoxFit.fitWidth,
+                                      )),
                       ),
                       Positioned(
                           bottom: 20,
@@ -124,7 +145,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   @override
   void dispose() {
     super.dispose();
-    nameController.dispose();
-    bioController.dispose();
+    nameController?.dispose();
+    bioController?.dispose();
   }
 }

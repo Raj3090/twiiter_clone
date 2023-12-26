@@ -28,7 +28,10 @@ class UserProfile extends ConsumerWidget {
                         ? Container(
                             color: Pallete.blueColor,
                           )
-                        : Image.network(userModel.bannerPic)),
+                        : Image.network(
+                            userModel.bannerPic,
+                            fit: BoxFit.fitWidth,
+                          )),
                 Positioned(
                     bottom: 0,
                     left: 16,

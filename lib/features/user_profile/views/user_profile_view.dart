@@ -6,7 +6,7 @@ import 'package:twitter_clone/models/user_model.dart';
 
 import '../../../constants/appwrite_constants.dart';
 
-class UserProfileView extends ConsumerStatefulWidget {
+class UserProfileView extends ConsumerWidget {
   static route(UserModel userModel) => MaterialPageRoute(
       builder: (context) => UserProfileView(
             userModel: userModel,
@@ -16,18 +16,12 @@ class UserProfileView extends ConsumerStatefulWidget {
   const UserProfileView({super.key, required this.userModel});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _UserProfileViewState();
-}
-
-class _UserProfileViewState extends ConsumerState<UserProfileView> {
-  @override
-  Widget build(BuildContext context) {
-    UserModel copyUserModel = widget.userModel;
+  Widget build(BuildContext context, WidgetRef ref) {
+    UserModel copyUserModel = userModel;
     return Scaffold(
         body: ref.watch(userProfileProvider).when(data: (data) {
       if (data.events.contains(
-          'databases.*.collections.${AppWriteConstants.userCollectionId}.documents.${copyUserModel.uid}')) {
+          'databases.*.collections.${AppWriteConstants.userCollectionId}.documents.${copyUserModel.uid}.update')) {
         copyUserModel = UserModel.fromMap(data.payload);
       }
       return UserProfile(
@@ -37,7 +31,7 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
       return Text(error.toString());
     }, loading: () {
       return UserProfile(
-        userModel: widget.userModel,
+        userModel: userModel,
       );
     }));
   }

@@ -50,15 +50,17 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   @override
   void initState() {
     super.initState();
-    final userModel = widget.userModel;
+    final userModel = ref.read(currentUserDataProvider).value;
     nameController = TextEditingController(text: userModel?.name ?? '');
     bioController = TextEditingController(text: userModel?.bio ?? '');
   }
 
   @override
   Widget build(BuildContext context) {
-    final userModel = widget.userModel;
-    return userModel == null
+    final userModel = ref.read(currentUserDataProvider).value;
+    final isLoading = ref.watch(userProfileControllerProvider);
+
+    return userModel == null || isLoading
         ? const Loader()
         : Scaffold(
             appBar: AppBar(

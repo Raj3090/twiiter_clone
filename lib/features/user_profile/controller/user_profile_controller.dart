@@ -14,7 +14,7 @@ import '../../../models/tweet_model.dart';
 final userTweetsProvider = FutureProvider.family((ref, String uid) =>
     ref.watch(userProfileControllerProvider.notifier).getTweetByUser(uid));
 
-final userProfileProvider = StreamProvider.autoDispose((ref) {
+final userProfileProvider = StreamProvider((ref) {
   return ref.watch(userApiProvider).getUserProfile();
 });
 
@@ -60,6 +60,28 @@ class UserProfileController extends StateController<bool> {
 
     final response = await _userApi.updateUserData(userModel);
     state = false;
-    response.fold((l) => showSnackBar(context, l.message), (r) => null);
+    response.fold((l) => showSnackBar(context, l.message), (r) {
+      Navigator.pop(context);
+    });
+  }
+
+  void followUser(
+      {required UserModel user,
+      required BuildContext context,
+      required UserModel currentUser}) async {
+    if (currentUser.following.contains(user.uid)) {
+      currentUser.following.remove(user.uid);
+      user.followers.remove(currentUser.uid);
+    } else {
+      currentUser.following.add(user.uid);
+      user.followers.add(currentUser.uid);
+    }
+
+    final response = await _userApi.updateFollowing(currentUser);
+
+    response.fold((l) => showSnackBar(context, l.message), (r) async {
+      final response = await _userApi.updateFollower(user);
+      response.fold((l) => showSnackBar(context, l.message), (r) => null);
+    });
   }
 }

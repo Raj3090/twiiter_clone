@@ -21,6 +21,8 @@ abstract class IUserAPI {
   Future<List<Document>> searchUserByName(String name);
   FutureEitherVoid updateUserData(UserModel userModel);
   Stream<RealtimeMessage> getUserProfile();
+  FutureEitherVoid updateFollower(UserModel userModel);
+  FutureEitherVoid updateFollowing(UserModel userModel);
 }
 
 class UserAPI implements IUserAPI {
@@ -82,5 +84,33 @@ class UserAPI implements IUserAPI {
     return _realtime.subscribe([
       'databases.${AppWriteConstants.databaseId}.collections.${AppWriteConstants.userCollectionId}.documents'
     ]).stream;
+  }
+
+  @override
+  FutureEitherVoid updateFollower(UserModel userModel) async {
+    try {
+      await _db.updateDocument(
+          databaseId: AppWriteConstants.databaseId,
+          collectionId: AppWriteConstants.userCollectionId,
+          documentId: userModel.uid,
+          data: {'followers': userModel.followers});
+      return right(null);
+    } catch (e, stackTrace) {
+      return left(Failure(e.toString(), stackTrace));
+    }
+  }
+
+  @override
+  FutureEitherVoid updateFollowing(UserModel userModel) async {
+    try {
+      await _db.updateDocument(
+          databaseId: AppWriteConstants.databaseId,
+          collectionId: AppWriteConstants.userCollectionId,
+          documentId: userModel.uid,
+          data: {'followeing': userModel.following});
+      return right(null);
+    } catch (e, stackTrace) {
+      return left(Failure(e.toString(), stackTrace));
+    }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/features/tweet/widgets/tweet_list.dart';
+import 'package:twitter_clone/features/user_profile/controller/user_profile_controller.dart';
 import 'package:twitter_clone/features/user_profile/views/edit_profile_view.dart';
 import 'package:twitter_clone/features/user_profile/widgets/follow_count.dart';
 import 'package:twitter_clone/models/user_model.dart';
@@ -50,11 +51,25 @@ class UserProfile extends ConsumerWidget {
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 25)),
                       onPressed: () {
-                        Navigator.push(
-                            context, EditProfileView.route(userModel));
+                        if (currentUser?.uid != userModel.uid) {
+                          Navigator.push(
+                              context, EditProfileView.route(userModel));
+                        } else {
+                          ref
+                              .watch(userProfileControllerProvider.notifier)
+                              .followUser(
+                                  user: userModel,
+                                  context: context,
+                                  currentUser: currentUser!);
+                        }
                       },
                       child: Text(
-                        currentUser?.uid != userModel.uid ? 'Follow' : 'Edit',
+                        currentUser?.uid != userModel.uid
+                            ? (currentUser?.following.contains(userModel.uid) ==
+                                    true
+                                ? 'UnFollow'
+                                : 'Follow')
+                            : 'Edit',
                         style: const TextStyle(color: Pallete.whiteColor),
                       )),
                 )

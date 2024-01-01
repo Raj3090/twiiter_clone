@@ -6,14 +6,16 @@ import 'package:twitter_clone/common/loading_page.dart';
 import 'package:twitter_clone/features/user_profile/controller/user_profile_controller.dart';
 
 import '../../../core/utils.dart';
+import '../../../models/user_model.dart';
 import '../../../theme/pallete.dart';
 import '../../auth/controller/auth_controller.dart';
 
 class EditProfileView extends ConsumerStatefulWidget {
-  static route() =>
-      MaterialPageRoute(builder: (context) => const EditProfileView());
+  static route(UserModel userModel) => MaterialPageRoute(
+      builder: (context) => EditProfileView(userModel: userModel));
 
-  const EditProfileView({super.key});
+  final UserModel userModel;
+  const EditProfileView({super.key, required this.userModel});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -48,14 +50,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   @override
   void initState() {
     super.initState();
-    final userModel = ref.read(currentUserDataProvider).value;
+    final userModel = widget.userModel;
     nameController = TextEditingController(text: userModel?.name ?? '');
     bioController = TextEditingController(text: userModel?.bio ?? '');
   }
 
   @override
   Widget build(BuildContext context) {
-    final userModel = ref.read(currentUserDataProvider).value;
+    final userModel = widget.userModel;
     return userModel == null
         ? const Loader()
         : Scaffold(

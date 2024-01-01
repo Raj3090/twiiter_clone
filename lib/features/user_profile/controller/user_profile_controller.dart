@@ -14,6 +14,10 @@ import '../../../models/tweet_model.dart';
 final userTweetsProvider = FutureProvider.family((ref, String uid) =>
     ref.watch(userProfileControllerProvider.notifier).getTweetByUser(uid));
 
+final userProfileProvider = StreamProvider.autoDispose((ref) {
+  return ref.watch(userApiProvider).getUserProfile();
+});
+
 final userProfileControllerProvider =
     StateNotifierProvider<UserProfileController, bool>(
         (ref) => UserProfileController(
@@ -43,6 +47,7 @@ class UserProfileController extends StateController<bool> {
 
   Future saveUserProfileData(UserModel userModel, File? bannerImage,
       File? profileImage, BuildContext context) async {
+    state = true;
     if (bannerImage != null) {
       final imageUrls = await _storageApi.getImageLinks([bannerImage]);
       userModel = userModel.copyWith(bannerPic: imageUrls[0]);
@@ -54,6 +59,7 @@ class UserProfileController extends StateController<bool> {
     }
 
     final response = await _userApi.updateUserData(userModel);
+    state = false;
     response.fold((l) => showSnackBar(context, l.message), (r) => null);
   }
 }

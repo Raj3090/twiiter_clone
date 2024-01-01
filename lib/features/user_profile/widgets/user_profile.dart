@@ -50,7 +50,8 @@ class UserProfile extends ConsumerWidget {
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 25)),
                       onPressed: () {
-                        Navigator.push(context, EditProfileView.route());
+                        Navigator.push(
+                            context, EditProfileView.route(userModel));
                       },
                       child: Text(
                         currentUser?.uid != userModel.uid ? 'Follow' : 'Edit',
